@@ -9,7 +9,7 @@
   gather_facts: true
   vars:
     do_auth_token: "9478c6172d74bcd0cf68a830e3845123777905ba95cbe92c773ea9ea479621e4"
-    domain: "admatters.co"
+    domain: "shopzabuy.dotmatter.io"
     email: "q@dotmatter.co"
 
     create_user: reaction
@@ -18,7 +18,7 @@
     nodejs_version: "12.x"
     proxy_dir: proxy
     proxy_path: "/home/{{ create_user }}/{{ proxy_dir }}"
-    reaction_dir: reaction-development
+    reaction_dir: shopSabai-reaction-development
     reaction_platform_path: "/home/{{create_user}}/{{reaction_dir}}"
     traefik_admin_user: reaction
     traefik_path: "/home/{{ create_user }}/{{ proxy_dir }}/traefik"
@@ -220,44 +220,44 @@
     #     regexp: "YOUR_DIGITALOCEAN_AUTH_TOKEN"
     #     replace: "{{ do_auth_token }}"
 
-    # - name: "Set config files path in Traefik's docker-compose.yml"
-    #   replace:
-    #     path: "{{ traefik_path}}/docker-compose.yml"
-    #     regexp: "TRAEFIK_PATH"
-    #     replace: "{{ traefik_path }}"
+    - name: "Set config files path in Traefik's docker-compose.yml"
+      replace:
+        path: "{{ traefik_path}}/docker-compose.yml"
+        regexp: "TRAEFIK_PATH"
+        replace: "{{ traefik_path }}"
 
-    # - name: "Set the desired domain in Traefik's docker-compose.yml"
-    #   replace:
-    #     path: "{{ traefik_path}}/docker-compose.yml"
-    #     regexp: "example.com"
-    #     replace: "{{ domain }}"
+    - name: "Set the desired domain in Traefik's docker-compose.yml"
+      replace:
+        path: "{{ traefik_path}}/docker-compose.yml"
+        regexp: "example.com"
+        replace: "{{ domain }}"
 
-    # - name: "Set the email in Traefik's config file"
-    #   replace:
-    #     path: "{{ traefik_path}}/traefik.yml"
-    #     regexp: "YOUR_EMAIL"
-    #     replace: "{{ email }}"
+    - name: "Set the email in Traefik's config file"
+      replace:
+        path: "{{ traefik_path}}/traefik.yml"
+        regexp: "YOUR_EMAIL"
+        replace: "{{ email }}"
 
-    # - name: "Set the domain in Traefik's config file"
-    #   replace:
-    #     path: "{{ traefik_path}}/traefik.yml"
-    #     regexp: "YOUR_DOMAIN"
-    #     replace: "{{ domain }}"
+    - name: "Set the domain in Traefik's config file"
+      replace:
+        path: "{{ traefik_path}}/traefik.yml"
+        regexp: "YOUR_DOMAIN"
+        replace: "{{ domain }}"
 
-    # - name: "Set correct permissions on traefik.yml"
-    #   file:
-    #     path: "{{ traefik_path}}/traefik.yml"
-    #     mode: "600"
+    - name: "Set correct permissions on traefik.yml"
+      file:
+        path: "{{ traefik_path}}/traefik.yml"
+        mode: "600"
 
-    # - name: "Set correct permissions on acme.json"
-    #   file:
-    #     path: "{{ traefik_path}}/acme.json"
-    #     mode: "600"
+    - name: "Set correct permissions on acme.json"
+      file:
+        path: "{{ traefik_path}}/acme.json"
+        mode: "600"
 
-    # - name: "Start Traefik"
-    #   command: "docker-compose up -d"
-    #   args:
-    #     chdir: "{{ traefik_path }}"
+    - name: "Start Traefik"
+      command: "docker-compose up -d"
+      args:
+        chdir: "{{ traefik_path }}"
 
     - name: "Copy docker-compose.override.yml files"
       copy:
@@ -270,23 +270,23 @@
       loop:
         - {
             file_src: "{{ proxy_path }}/reaction/docker-compose.override.yml",
-            file_dest: "{{ reaction_platform_path }}/reaction",
+            file_dest: "{{ reaction_platform_path }}/shopSabai-api",
           }
         - {
             file_src: "{{ proxy_path }}/example-storefront/docker-compose.override.yml",
-            file_dest: "{{ reaction_platform_path }}/storefront", 
+            file_dest: "{{ reaction_platform_path }}/shopSabai-mobile-dev", 
           }
         - {
             file_src: "{{ proxy_path }}/reaction-admin/docker-compose.override.yml",
-            file_dest: "{{ reaction_platform_path }}/reaction-admin",
+            file_dest: "{{ reaction_platform_path }}/shopSabai-admin",
           }
         - {
             file_src: "{{ proxy_path }}/reaction-hydra/docker-compose.override.yml",
-            file_dest: "{{ reaction_platform_path }}/reaction-hydra",
+            file_dest: "{{ reaction_platform_path }}/shopSabai-hydra",
           }
         - {
             file_src: "{{ proxy_path }}/reaction-identity/docker-compose.override.yml",
-            file_dest: "{{ reaction_platform_path }}/reaction-identity",
+            file_dest: "{{ reaction_platform_path }}/shopSabai-identity",
           }
 
     - name: "Set the desired domain in all docker-compose.override.yml files"
@@ -295,15 +295,15 @@
         regexp: "example.com"
         replace: "{{ domain }}"
       loop:
-        - "{{ reaction_platform_path }}/reaction/docker-compose.override.yml"
-        - "{{ reaction_platform_path }}/storefront/docker-compose.override.yml"
-        - "{{ reaction_platform_path }}/reaction-admin/docker-compose.override.yml"
-        - "{{ reaction_platform_path }}/reaction-hydra/docker-compose.override.yml"
-        - "{{ reaction_platform_path }}/reaction-identity/docker-compose.override.yml"
+        - "{{ reaction_platform_path }}/shopSabai-api/docker-compose.override.yml"
+        - "{{ reaction_platform_path }}/shopSabai-mobile-dev/docker-compose.override.yml"
+        - "{{ reaction_platform_path }}/shopSabai-admin/docker-compose.override.yml"
+        - "{{ reaction_platform_path }}/shopSabai-hydra/docker-compose.override.yml"
+        - "{{ reaction_platform_path }}/shopSabai-identity/docker-compose.override.yml"
 
     - name: "Set Reaction's environment variables"
       lineinfile:
-        path: "{{ reaction_platform_path }}/reaction/.env"
+        path: "{{ reaction_platform_path }}/shopSabai-api/.env"
         regexp: "^{{ item.variable }}"
         # line: "ROOT_URL=https://api.{{ domain }}"
         line: "{{ item.variable }}={{ item.value }}"
@@ -314,12 +314,12 @@
           }
         - {
             variable: "MONGO_URL",
-            value: "mongodb+srv://qdotmatterco:rTdrUNRI1CqNcpmg@cluster0.fbmg6.mongodb.net/reaction?retryWrites=true&w=majority",
+            value: "mongodb+srv://dmreaction:pg6fjJgetKA3Ww7D@cluster0.h4atf.mongodb.net/shb-dev?retryWrites=true&w=majority",
           }
 
     - name: "Set the example storefront's environment variables"
       lineinfile:
-        path: "{{ reaction_platform_path }}/storefront/.env"
+        path: "{{ reaction_platform_path }}/shopSabai-mobile-dev/.env"
         regexp: "^{{ item.variable }}"
         line: "{{ item.variable }}={{ item.value }}"
       loop:
@@ -358,7 +358,7 @@
 
     - name: "Set Hydra's environment variables"
       lineinfile:
-        path: "{{ reaction_platform_path }}/reaction-hydra/.env"
+        path: "{{ reaction_platform_path }}/shopSabai-hydra/.env"
         regexp: "^{{ item.variable }}"
         line: "{{ item.variable }}={{ item.value }}"
       loop:
@@ -389,7 +389,7 @@
 
     - name: "Set the Reaction identity service environment variables"
       lineinfile:
-        path: "{{ reaction_platform_path }}/reaction-identity/.env"
+        path: "{{ reaction_platform_path }}/shopSabai-identity/.env"
         regexp: "^{{ item.variable }}"
         line: "{{ item.variable }}={{ item.value }}"
       loop:
@@ -411,16 +411,16 @@
           }
         - {
           variable: "MONGO_OPLOG_URL",
-          value: "mongodb+srv://qdotmatterco:rTdrUNRI1CqNcpmg@cluster0.fbmg6.mongodb.net/local?retryWrites=true&w=majority"
+          value: "mongodb+srv://dmreaction:pg6fjJgetKA3Ww7D@cluster0.h4atf.mongodb.net/local?retryWrites=true&w=majority"
           }
         - {
           variable: "MONGO_URL",
-          value: "mongodb+srv://qdotmatterco:rTdrUNRI1CqNcpmg@cluster0.fbmg6.mongodb.net/reaction?retryWrites=true&w=majority"
+          value: "mongodb+srv://dmreaction:pg6fjJgetKA3Ww7D@cluster0.h4atf.mongodb.net/shb-dev?retryWrites=true&w=majority"
           }
 
     - name: "Set the Reaction admin UI service environment variables"
       lineinfile:
-        path: "{{ reaction_platform_path }}/reaction-admin/.env"
+        path: "{{ reaction_platform_path }}/shopSabai-admin/.env"
         regexp: "^{{ item.variable }}"
         line: "{{ item.variable }}={{ item.value }}"
       loop:
@@ -458,11 +458,11 @@
           }
         - {
           variable: "MONGO_OPLOG_URL",
-          value: "mongodb+srv://qdotmatterco:rTdrUNRI1CqNcpmg@cluster0.fbmg6.mongodb.net/local?retryWrites=true&w=majority"
+          value: "mongodb+srv://dmreaction:pg6fjJgetKA3Ww7D@cluster0.h4atf.mongodb.net/local?retryWrites=true&w=majority"
           }
         - {
           variable: "MONGO_URL",
-          value: "mongodb+srv://qdotmatterco:rTdrUNRI1CqNcpmg@cluster0.fbmg6.mongodb.net/reaction?retryWrites=true&w=majority"
+          value: "mongodb+srv://dmreaction:pg6fjJgetKA3Ww7D@cluster0.h4atf.mongodb.net/shb-dev?retryWrites=true&w=majority"
           }
 
     - name: "Remove all Reaction Platform containers"
