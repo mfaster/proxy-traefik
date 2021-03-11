@@ -196,29 +196,29 @@
     # #     regexp: "git@github.com:"
     # #     replace: "https://github.com/"
 
-    # - name: "Build the Reaction Platform"
-    #   become: yes
-    #   become_user: "{{ create_user }}"
-    #   command: make
-    #   args:
-    #     chdir: "/home/{{create_user}}/{{reaction_dir}}"
+    - name: "Build the Reaction Platform"
+      become: yes
+      become_user: "{{ create_user }}"
+      command: make
+      args:
+        chdir: "/home/{{create_user}}/{{reaction_dir}}"
 
-    # - name: "Stop all Reaction development platform containers"
-    #   command: make stop
-    #   args:
-    #     chdir: "{{ reaction_platform_path }}"
+    - name: "Stop all Reaction development platform containers"
+      command: make stop
+      args:
+        chdir: "{{ reaction_platform_path }}"
 
-    # - name: Create Docker network named web
-    #   command: docker network create web
+    - name: Create Docker network named web
+      command: docker network create web
 
-    # - name: Create Docker network named internal
-    #   command: docker network create internal
+    - name: Create Docker network named internal
+      command: docker network create internal
 
-    # - name: "Set DO Auth Token in Traefik's docker-compose.yml"
-    #   replace:
-    #     path: "{{ traefik_path}}/docker-compose.yml"
-    #     regexp: "YOUR_DIGITALOCEAN_AUTH_TOKEN"
-    #     replace: "{{ do_auth_token }}"
+    - name: "Set DO Auth Token in Traefik's docker-compose.yml"
+      replace:
+        path: "{{ traefik_path}}/docker-compose.yml"
+        regexp: "YOUR_DIGITALOCEAN_AUTH_TOKEN"
+        replace: "{{ do_auth_token }}"
 
     - name: "Set config files path in Traefik's docker-compose.yml"
       replace:
@@ -309,7 +309,7 @@
         line: "{{ item.variable }}={{ item.value }}"
       loop:
         - {
-            variable: "ROOT_UR",
+            variable: "ROOT_URL",
             value: "https://api.{{ domain }}",
           }
         - {
@@ -317,7 +317,7 @@
             value: "mongodb+srv://dmreaction:pg6fjJgetKA3Ww7D@cluster0.h4atf.mongodb.net/shb-dev?retryWrites=true&w=majority",
           }
 
-    - name: "Set the example storefront's environment variables"
+    - name: "Set the storefront's environment variables"
       lineinfile:
         path: "{{ reaction_platform_path }}/shopSabai-mobile-dev/.env"
         regexp: "^{{ item.variable }}"
@@ -328,9 +328,9 @@
             value: "https://storefront.{{ domain }}",
           }
         - {
-            variable: "EXTERNAL_GRAPHQL_URL",
-            value: "https://api.{{ domain }}/graphql",
-          }
+          variable: "EXTERNAL_GRAPHQL_URL",
+          value: "https://api.{{ domain }}/graphql",
+        }
         - {
             variable: "OAUTH2_AUTH_URL",
             value: "https://hydra.{{ domain }}/oauth2/auth",
@@ -354,6 +354,10 @@
         - {
             variable: "OAUTH2_IDP_PUBLIC_CHANGE_PASSWORD_URL",
             value: "https://identity.{{ domain }}/account/change-password?email=EMAIL&from=FROM",
+          }
+        - {
+            variable: "STRIPE_PUBLIC_API_KEY",
+            value: "pk_test_51H0fnPESnBaDGBBlcdxRmM3mrTkzhxgQpBW8lbxVUAQjqAhZG2utrdUiSbFTg4b8YWXJlypdubJXoFwjUOf0EUD800cY6WfaXQ",
           }
 
     - name: "Set Hydra's environment variables"
