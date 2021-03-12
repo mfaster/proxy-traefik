@@ -328,7 +328,15 @@
             value: "https://storefront.{{ domain }}",
           }
         - {
+            variable: "BUILD_GRAPHQL_URL",
+            value: "https://api.{{ domain }}/graphql",
+          }
+        - {
           variable: "EXTERNAL_GRAPHQL_URL",
+          value: "https://api.{{ domain }}/graphql",
+        }
+        - {
+          variable: "INTERNAL_GRAPHQL_URL",
           value: "https://api.{{ domain }}/graphql",
         }
         - {
